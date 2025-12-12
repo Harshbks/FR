@@ -2,14 +2,34 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teacher Directory & Ratings</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Faculty Directory</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* Teacher Theme */
+            /* --- DEFAULT THEME: DAY / LIGHT --- */
+            --bg-gradient-1: #fdfbfb;
+            --bg-gradient-2: #ebedee;
+            --bg-gradient-3: #dfe9f3; 
+            --bg-gradient-4: #ffffff; 
+            --glass-bg: rgba(255, 255, 255, 0.9);
+            --glass-border: rgba(200, 200, 200, 0.6);
+            --text-primary: #1a202c;
+            --text-secondary: #4a5568;
+            --input-bg: #ffffff;
+            --input-border: #cbd5e0;
+            --shadow-color: rgba(0, 0, 0, 0.08);
+            --accent-glow: rgba(66, 153, 225, 0.6);
+            --tag-bg: rgba(0, 0, 0, 0.05);
+            --star-inactive: #cbd5e0;
+            --star-active: #f6ad55;
+            --card-banner-overlay: linear-gradient(180deg, rgba(0,0,0,0.1), rgba(0,0,0,0.05));
+        }
+
+        /* --- DARK THEME --- */
+        [data-theme="dark"] {
             --bg-gradient-1: #89f7fe;
             --bg-gradient-2: #66a6ff;
             --bg-gradient-3: #fbc2eb;
@@ -23,31 +43,12 @@
             --shadow-color: rgba(0, 0, 0, 0.1);
             --accent-glow: rgba(102, 166, 255, 0.5);
             --tag-bg: rgba(255, 255, 255, 0.2);
-            --warning-color: #fbbf24;
-            --error-color: #f87171;
-            --success-color: #34d399; 
             --star-active: #FFD700;
             --star-inactive: rgba(255,255,255,0.3);
+            --card-banner-overlay: linear-gradient(180deg, rgba(255,255,255,0.2), rgba(255,255,255,0.05));
         }
 
-        [data-theme="light"] {
-            --bg-gradient-1: #e0c3fc;
-            --bg-gradient-2: #8ec5fc;
-            --bg-gradient-3: #e2ebf0;
-            --bg-gradient-4: #cfd9df;
-            --glass-bg: rgba(255, 255, 255, 0.65);
-            --glass-border: rgba(255, 255, 255, 0.9);
-            --text-primary: #2d3748;
-            --text-secondary: rgba(45, 55, 72, 0.7);
-            --input-bg: rgba(255, 255, 255, 0.7);
-            --input-border: rgba(255, 255, 255, 1);
-            --shadow-color: rgba(0, 0, 0, 0.05);
-            --accent-glow: rgba(142, 197, 252, 0.6);
-            --tag-bg: rgba(0, 0, 0, 0.05);
-            --star-inactive: #cbd5e0;
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         body {
             font-family: 'Inter', sans-serif;
@@ -57,12 +58,21 @@
             color: var(--text-primary);
             min-height: 100vh;
             overflow-x: hidden;
+            transition: color 0.3s ease;
         }
 
         @keyframes gradientShift {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
+        }
+
+        /* --- Layout Container --- */
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1.5rem; /* Better padding for mobile */
         }
 
         /* --- Utility Classes --- */
@@ -72,309 +82,222 @@
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid var(--glass-border);
             box-shadow: 0 8px 32px var(--shadow-color);
-            border-radius: 24px;
+            border-radius: 20px;
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem 1rem;
-        }
-
         .fade-in { animation: fadeIn 0.5s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* --- Navigation Bar --- */
+        /* --- Header & Search --- */
         .navbar {
             display: flex;
             justify-content: flex-end;
-            align-items: center;
-            padding: 1rem 0;
-            margin-bottom: 2rem;
+            padding: 0.5rem 0;
+            margin-bottom: 1.5rem;
         }
 
         .theme-toggle {
-            width: 45px;
-            height: 45px;
+            width: 50px; height: 50px; /* Larger touch target */
             border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 1.2rem;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; font-size: 1.4rem;
             background: var(--glass-bg);
             border: 1px solid var(--glass-border);
+            color: var(--text-primary);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
 
-        /* --- Search Specific Styles --- */
-        .search-header { text-align: center; margin-bottom: 3rem; }
+        .search-header { text-align: center; margin-bottom: 2rem; }
+        
+        /* Responsive Text Size */
+        .search-header h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem); /* Auto-scales between 2rem and 3.5rem */
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            line-height: 1.2;
+        }
 
         .search-container {
-            position: relative;
             max-width: 600px;
-            margin: 0 auto 3rem auto;
+            margin: 0 auto 2rem auto;
             display: flex;
-            gap: 1rem;
-            align-items: stretch;
+            position: relative;
         }
 
-        .search-input-wrapper { position: relative; flex-grow: 1; }
-
         .search-icon-input {
-            position: absolute;
-            left: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 1.4rem;
-            opacity: 0.7;
-            pointer-events: none;
-            z-index: 1;
+            position: absolute; left: 20px; top: 50%;
+            transform: translateY(-50%); font-size: 1.4rem;
+            opacity: 0.7; pointer-events: none; color: var(--text-primary);
         }
 
         .search-input {
             padding-left: 3.5rem;
-            height: 60px;
-            font-size: 1.2rem;
+            height: 60px; /* Taller for mobile typing */
+            font-size: 16px; /* Prevents iOS Zoom on focus */
             border-radius: 50px;
             width: 100%;
             background: var(--glass-bg);
             border: 1px solid var(--glass-border);
             color: var(--text-primary);
-            backdrop-filter: blur(10px);
-            transition: all 0.3s;
-        }
-
-        .search-input:focus {
             outline: none;
-            box-shadow: 0 0 0 4px var(--accent-glow);
-            background: var(--input-bg);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
         }
+        .search-input:focus { box-shadow: 0 0 0 3px var(--accent-glow); background: var(--input-bg); }
 
-        /* --- Results Grid & Card --- */
+        /* --- Cards Grid --- */
         .results-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 2rem;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Smart Responsive Grid */
+            gap: 1.5rem;
         }
 
         .teacher-card {
-            padding: 0;
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
+            display: flex; flex-direction: column;
+            position: relative; overflow: hidden;
+            border-radius: 20px;
         }
 
-        .card-banner {
-            height: 110px;
-            background: linear-gradient(180deg, rgba(255,255,255,0.2), rgba(255,255,255,0.05));
-            position: relative;
-        }
+        .card-banner { height: 100px; background: var(--card-banner-overlay); }
 
         .t-avatar-wrapper {
-            position: absolute;
-            top: 55px;
-            left: 50%;
+            position: absolute; top: 50px; left: 50%;
             transform: translateX(-50%);
         }
 
         .t-avatar {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            background: #ffffff;
-            border: 4px solid rgba(255,255,255,0.3);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            width: 100px; height: 100px;
+            border-radius: 50%; background: #ffffff;
+            border: 4px solid rgba(255,255,255,0.5);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display: flex; align-items: center; justify-content: center;
         }
 
-        .t-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .t-content {
-            padding: 4rem 1.5rem 1.5rem 1.5rem;
-            text-align: center;
-        }
+        .t-content { padding: 3.5rem 1.2rem 1.5rem 1.2rem; text-align: center; }
 
         .t-name { font-size: 1.4rem; font-weight: 700; margin-bottom: 0.2rem; }
-        
-        .t-badge { 
-            color: var(--text-primary); 
-            font-size: 0.9rem; 
-            font-weight: 600;
-            margin-bottom: 0.5rem; 
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4rem;
-            padding: 0.4rem 1rem; 
-            background: var(--tag-bg); 
-            border-radius: 20px; 
-            border: 1px solid var(--glass-border);
+
+        .t-badge {
+            font-size: 0.85rem; font-weight: 600;
+            padding: 0.3rem 0.8rem; background: var(--tag-bg);
+            border-radius: 15px; border: 1px solid var(--glass-border);
+            display: inline-flex; align-items: center; gap: 4px;
+            margin-bottom: 0.5rem;
         }
 
-        /* Saved Rating Display (Small stars under name) */
         .card-rating-display {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            margin-bottom: 1.5rem;
-            color: var(--star-active);
-            font-weight: 700;
+            display: flex; align-items: center; justify-content: center;
+            gap: 0.4rem; margin-bottom: 1.2rem;
+            color: var(--star-active); font-weight: 700;
         }
-        .card-rating-display span.score {
-            font-size: 1.1rem;
-            color: var(--text-primary);
-        }
+        .card-rating-display .score { color: var(--text-primary); font-size: 1.1rem; }
 
-        .t-details-list {
-            display: flex;
-            flex-direction: column;
-            gap: 0.8rem;
-        }
+        .t-details-list { display: flex; flex-direction: column; gap: 0.6rem; }
 
         .t-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem;
-            background: var(--input-bg);
-            border-radius: 14px;
-            font-size: 0.95rem;
-            transition: transform 0.2s;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0.9rem; background: var(--input-bg);
+            border-radius: 12px; font-size: 0.9rem;
             border: 1px solid transparent;
         }
 
-        .t-row:hover {
-            transform: scale(1.02);
-            background: rgba(255,255,255,0.15);
-            border-color: var(--glass-border);
-        }
+        .t-label { color: var(--text-secondary); font-weight: 500; display: flex; align-items: center; gap: 0.5rem; }
+        .t-val { font-weight: 600; text-align: right; max-width: 60%; word-break: break-all; }
 
-        .t-label { color: var(--text-secondary); font-weight: 500; display: flex; align-items: center; gap: 0.6rem; }
-        .t-val { font-weight: 600; text-align: right; word-break: break-word; max-width: 60%; }
+        .gmail-link { color: #d93025; text-decoration: none; font-weight: 800; }
+        [data-theme="dark"] .gmail-link { color: #ff6b6b; }
         
-        .email-link { 
-            color: inherit; 
-            text-decoration: none;
-            border-bottom: 1px dotted currentColor;
-        }
-
         .social-link { 
             background: linear-gradient(45deg, #0077b5 0%, #0e76a8 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-decoration: none; 
-            font-weight: 800; 
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            text-decoration: none; font-weight: 800; 
         }
 
-        /* --- RATE BUTTON (Order #5) --- */
+        /* --- Buttons --- */
         .btn-rate {
-            width: 100%;
-            padding: 1rem; /* Slightly larger since it's at bottom */
-            margin-top: 0.5rem;
-            border: none;
-            border-radius: 14px; /* Matches row radius */
+            width: 100%; padding: 0.9rem;
+            margin-top: 0.5rem; border: none; border-radius: 12px;
             background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
-            color: #fff;
-            font-weight: 800;
-            font-size: 1rem;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(255, 154, 158, 0.4);
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            color: #2d3748; font-weight: 800; font-size: 1rem;
+            cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+            transition: transform 0.1s;
         }
-        [data-theme="light"] .btn-rate { color: #444; }
+        [data-theme="dark"] .btn-rate { color: white; }
+        .btn-rate:active { transform: scale(0.96); }
 
-        .btn-rate:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(255, 154, 158, 0.6);
-        }
-
-        /* --- MODAL STYLES --- */
+        /* --- Modal (Mobile Optimized) --- */
         .modal-overlay {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(8px);
-            z-index: 1000;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: opacity 0.3s;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); backdrop-filter: blur(5px);
+            z-index: 2000; display: none; align-items: center; justify-content: center;
+            opacity: 0; transition: opacity 0.3s;
+            padding: 1rem; /* Prevent edge touching on mobile */
         }
         .modal-overlay.active { display: flex; opacity: 1; }
 
         .review-modal {
-            width: 90%; max-width: 500px; max-height: 90vh; overflow-y: auto;
-            background: var(--glass-bg); background-color: #2d3748; 
-            border: 1px solid var(--glass-border); border-radius: 24px;
-            padding: 2rem; position: relative; transform: scale(0.9);
-            transition: transform 0.3s; color: var(--text-primary);
+            width: 100%; max-width: 450px;
+            max-height: 85vh; /* Ensure it fits in viewport */
+            overflow-y: auto; /* Scrollable internal content */
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 1.5rem;
+            position: relative;
+            transform: scale(0.9); transition: transform 0.3s;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            color: var(--text-primary);
         }
-        [data-theme="light"] .review-modal { background-color: #fff; }
-
+        [data-theme="dark"] .review-modal { background: #2d3748; }
         .modal-overlay.active .review-modal { transform: scale(1); }
 
         .close-btn {
-            position: absolute; top: 1rem; right: 1.5rem;
-            font-size: 2rem; background: none; border: none;
-            color: var(--text-secondary); cursor: pointer;
+            position: absolute; top: 1rem; right: 1rem;
+            font-size: 1.8rem; background: none; border: none;
+            color: var(--text-secondary); cursor: pointer; padding: 5px;
         }
 
-        .rating-group { margin-bottom: 1.5rem; }
-        .rating-label { display: block; margin-bottom: 0.5rem; font-weight: 600; font-size: 0.95rem; }
-        .stars-container { display: flex; gap: 5px; }
+        .rating-group { margin-bottom: 1.2rem; }
+        .rating-label { font-size: 0.9rem; font-weight: 600; margin-bottom: 0.4rem; display: block; }
         
+        .stars-container { display: flex; justify-content: space-between; max-width: 250px; }
         .star-btn {
-            background: none; border: none; font-size: 1.8rem; color: var(--star-inactive);
-            cursor: pointer; transition: transform 0.2s;
+            background: none; border: none; font-size: 2rem;
+            color: var(--star-inactive); cursor: pointer; padding: 0 5px;
+            transition: color 0.1s;
         }
-        .star-btn:hover { transform: scale(1.2); }
         .star-btn.active { color: var(--star-active); }
 
         .live-score-box {
-            text-align: center; padding: 1rem; background: var(--input-bg);
-            border-radius: 16px; margin-top: 1rem; border: 1px solid var(--glass-border);
+            text-align: center; padding: 1rem;
+            background: var(--input-bg); border-radius: 16px;
+            margin-top: 1rem; border: 1px solid var(--glass-border);
         }
+        
         .blink-score {
-            font-size: 3rem; font-weight: 800; color: var(--warning-color);
+            font-size: 3rem; font-weight: 800; color: #e08e00;
             animation: blinker 1.5s linear infinite;
         }
-        @keyframes blinker { 50% { opacity: 0.3; } }
+        [data-theme="dark"] .blink-score { color: var(--warning-color); }
+        @keyframes blinker { 50% { opacity: 0.5; } }
 
         .submit-btn {
-            width: 100%; padding: 1rem; background: var(--success-color); color: white;
+            width: 100%; padding: 1rem; background: #34d399; color: white;
             border: none; border-radius: 12px; font-size: 1.1rem; font-weight: 700;
-            margin-top: 1.5rem; cursor: pointer; box-shadow: 0 4px 15px rgba(52, 211, 153, 0.4);
+            margin-top: 1rem; cursor: pointer;
         }
 
-        @media (max-width: 768px) {
-            .results-grid { grid-template-columns: 1fr; }
+        /* --- Media Queries for Extra Small Phones --- */
+        @media (max-width: 400px) {
+            .t-avatar { width: 80px; height: 80px; }
+            .t-avatar-wrapper { top: 60px; }
+            .card-banner { height: 90px; }
+            .t-content { padding-top: 2.5rem; }
             .search-header h1 { font-size: 2rem; }
         }
     </style>
 </head>
-<body>
-
-    <div class="container">
+<body data-theme="light"> <div class="container">
         <div class="navbar">
             <div class="theme-toggle" onclick="toggleTheme()" title="Toggle Theme">
                 <span id="themeIcon">🌙</span>
@@ -382,8 +305,8 @@
         </div>
 
         <div class="search-header fade-in">
-            <h1 style="font-size: 3.5rem; font-weight: 800; margin-bottom: 0.5rem; text-shadow: 0 4px 30px rgba(0,0,0,0.1);">Faculty Directory</h1>
-            <p style="color: var(--text-secondary); font-size: 1.2rem;">Connect with & Rate professors</p>
+            <h1>Faculty Directory</h1>
+            <p style="color: var(--text-secondary); font-size: 1.1rem;">Connect with & Rate professors</p>
         </div>
         
         <div class="search-container fade-in">
@@ -394,9 +317,9 @@
         </div>
 
         <div id="searchResults" class="results-grid fade-in">
-            <div class="glass" style="padding: 3rem; grid-column: 1/-1; text-align: center; color: var(--text-secondary); display: flex; flex-direction: column; align-items: center; gap: 1rem;">
+            <div class="glass" style="padding: 3rem 1rem; grid-column: 1/-1; text-align: center; color: var(--text-secondary); display: flex; flex-direction: column; align-items: center; gap: 1rem;">
                 <div style="font-size: 3rem;">🎓</div>
-                <p>Start typing a Name to find faculty members.</p>
+                <p>Start typing a Name to find faculty.</p>
             </div>
         </div>
     </div>
@@ -404,16 +327,15 @@
     <div class="modal-overlay" id="reviewModal">
         <div class="review-modal">
             <button class="close-btn" onclick="closeModal()">×</button>
-            <h2 style="margin-bottom: 0.2rem;">Rate Faculty</h2>
-            <p id="modalTeacherName" style="color: var(--accent-glow); margin-bottom: 2rem; font-weight: 600;">Teacher Name</p>
+            <h2 style="margin-bottom: 0.2rem; font-size: 1.5rem;">Rate Faculty</h2>
+            <p id="modalTeacherName" style="color: var(--accent-glow); margin-bottom: 1.5rem; font-weight: 600;">Teacher Name</p>
             
             <input type="hidden" id="currentTeacherId">
 
-            <div id="ratingForm">
-                </div>
+            <div id="ratingForm"></div>
 
             <div class="live-score-box">
-                <div style="font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px;">Overall Rating</div>
+                <div style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px;">Overall Rating</div>
                 <div id="finalScoreDisplay" class="blink-score">0.0</div>
             </div>
 
@@ -422,15 +344,13 @@
     </div>
 
     <script>
-        /* --- Theme Logic --- */
-        let currentTheme = 'dark';
+        let currentTheme = 'light';
         function toggleTheme() {
-            currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            currentTheme = currentTheme === 'light' ? 'dark' : 'light';
             document.body.setAttribute('data-theme', currentTheme);
-            document.getElementById('themeIcon').textContent = currentTheme === 'dark' ? '🌙' : '☀️';
+            document.getElementById('themeIcon').textContent = currentTheme === 'light' ? '🌙' : '☀️';
         }
 
-        /* --- Teacher Data --- */
         const teacherDatabase = [
             { id: 1, name: "Shubhasri Kundu", subject: "IND4.O", email: "shubhasri.kundufel@kiit.ac.in", phone: "8280311924", department: "ELECTRONICS", seed: "shubhasri", social: "https://www.facebook.com/angel.su.10048" },
             { id: 2, name: "Rachita Panda", subject: "STW", email: "rachita.pandafce@kiit.ac.in", phone: "9658978785", department: "CIVIL", seed: "rachita", social: "https://www.facebook.com/rachita.panda.31" },
@@ -440,7 +360,6 @@
             { id: 6, name: "Paromita Chakraborty", subject: "STW", email: "paromita.chakrabortyfce@kiit.ac.in", phone: "0000000000", department: "CIVIL", seed: "paromita", social: "https://www.facebook.com/paromita.chakrabortyfce" }
         ];
 
-        /* --- LocalStorage Helper --- */
         function getRatingData(id) {
             const data = localStorage.getItem(`rating_data_${id}`);
             return data ? JSON.parse(data) : { totalSum: 0, count: 0 };
@@ -453,25 +372,24 @@
             localStorage.setItem(`rating_data_${id}`, JSON.stringify(current));
         }
 
-        /* --- Search Logic --- */
         function searchTeacher() {
             const query = document.getElementById('teacherSearchInput').value.toLowerCase().trim();
             const container = document.getElementById('searchResults');
             
             if (query.length === 0) {
-                container.innerHTML = `<div class="glass" style="padding: 3rem; grid-column: 1/-1; text-align: center; color: var(--text-secondary); display: flex; flex-direction: column; align-items: center; gap: 1rem;"><div style="font-size: 3rem;">🎓</div><p>Start typing a Name to find faculty members.</p></div>`;
+                container.innerHTML = `<div class="glass" style="padding: 3rem 1rem; grid-column: 1/-1; text-align: center; color: var(--text-secondary); display: flex; flex-direction: column; align-items: center; gap: 1rem;"><div style="font-size: 3rem;">🎓</div><p>Start typing a Name.</p></div>`;
                 return;
             }
 
             if (query.length < 3) {
-                 container.innerHTML = `<div class="glass" style="padding: 3rem; grid-column: 1/-1; text-align: center; color: var(--warning-color); display: flex; flex-direction: column; align-items: center; gap: 1rem;"><div style="font-size: 3rem;">⌨️</div><p>Please enter at least 3 characters...</p></div>`;
+                 container.innerHTML = `<div class="glass" style="padding: 3rem 1rem; grid-column: 1/-1; text-align: center; color: var(--warning-color); display: flex; flex-direction: column; align-items: center; gap: 1rem;"><div style="font-size: 3rem;">⌨️</div><p>Enter at least 3 chars...</p></div>`;
                 return;
             }
 
             const results = teacherDatabase.filter(t => t.name.toLowerCase().includes(query));
 
             if (results.length === 0) {
-                container.innerHTML = `<div class="glass" style="padding: 3rem; grid-column: 1/-1; text-align: center; color: var(--error-color); display: flex; flex-direction: column; align-items: center; gap: 1rem;"><div style="font-size: 3rem;">🤷‍♂️</div><p>No faculty found matching "${query}"</p></div>`;
+                container.innerHTML = `<div class="glass" style="padding: 3rem 1rem; grid-column: 1/-1; text-align: center; color: var(--error-color); display: flex; flex-direction: column; align-items: center; gap: 1rem;"><div style="font-size: 3rem;">🤷‍♂️</div><p>No faculty found.</p></div>`;
                 return;
             }
 
@@ -499,41 +417,22 @@
                         </div>
                         
                         <div class="t-details-list">
-                            <div class="t-row">
-                                <span class="t-label">🏫 Dept</span>
-                                <span class="t-val">${t.department}</span>
-                            </div>
-                            
-                            <div class="t-row">
-                                <span class="t-label">📧 Email</span>
-                                <span class="t-val" style="font-size: 0.85rem;"><a href="mailto:${t.email}" class="email-link">${t.email}</a></span>
-                            </div>
-
-                            <div class="t-row">
-                                <span class="t-label">📞 Phone</span>
-                                <span class="t-val">${t.phone}</span>
-                            </div>
-
-                            <div class="t-row">
-                                <span class="t-label">🔗 Social</span>
-                                <span class="t-val"><a href="${t.social}" target="_blank" rel="noopener noreferrer" class="social-link">Connect</a></span>
-                            </div>
-
-                            <button class="btn-rate" onclick="openReviewModal(${t.id}, '${t.name}')">
-                                <span>⭐</span> Rate Faculty
-                            </button>
+                            <div class="t-row"><span class="t-label">🏫 Dept</span><span class="t-val">${t.department}</span></div>
+                            <div class="t-row"><span class="t-label">📞 Phone</span><span class="t-val">${t.phone}</span></div>
+                            <div class="t-row"><span class="t-label">📧 Email</span><span class="t-val"><a href="https://mail.google.com/mail/?view=cm&fs=1&to=${t.email}" target="_blank" class="gmail-link">Connect</a></span></div>
+                            <div class="t-row"><span class="t-label">🔗 Social</span><span class="t-val"><a href="${t.social}" target="_blank" rel="noopener noreferrer" class="social-link">Connect</a></span></div>
+                            <button class="btn-rate" onclick="openReviewModal(${t.id}, '${t.name}')"><span>⭐</span> Rate Faculty</button>
                         </div>
                     </div>
                 </div>
             `}).join('');
         }
 
-        /* --- RATING LOGIC --- */
         let currentRatings = { c1:0, c2:0, c3:0, c4:0, c5:0 };
         const criteriaNames = [
             {id: 'c1', label: '1. Behaviour'},
             {id: 'c2', label: '2. Teaching Style'},
-            {id: 'c3', label: '3. Marks Giving in Exam'},
+            {id: 'c3', label: '3. Marks Giving'},
             {id: 'c4', label: '4. Attendance'},
             {id: 'c5', label: '5. Internal Marks'}
         ];
@@ -565,22 +464,22 @@
             currentRatings = { c1:0, c2:0, c3:0, c4:0, c5:0 };
             document.getElementById('finalScoreDisplay').innerText = "0.0";
             document.getElementById('reviewModal').classList.add('active');
+            document.body.style.overflow = 'hidden'; /* Prevent background scrolling */
         }
 
         function closeModal() {
             document.getElementById('reviewModal').classList.remove('active');
+            document.body.style.overflow = 'auto';
         }
 
         function setStar(criteriaId, value, btnElement) {
             currentRatings[criteriaId] = value;
-            
             const container = document.getElementById(`stars-${criteriaId}`);
             const buttons = container.getElementsByTagName('button');
             for(let i=0; i<buttons.length; i++) {
                 if(i < value) buttons[i].classList.add('active');
                 else buttons[i].classList.remove('active');
             }
-
             calculateLiveAvg();
         }
 
@@ -588,9 +487,7 @@
             let sum = 0;
             let keys = Object.keys(currentRatings);
             keys.forEach(k => sum += currentRatings[k]);
-            
             let avg = (sum / 5).toFixed(1);
-            
             const display = document.getElementById('finalScoreDisplay');
             display.innerText = avg;
             display.classList.remove('blink-score');
@@ -603,12 +500,9 @@
                 alert("Please rate all 5 criteria!");
                 return;
             }
-
             const teacherId = document.getElementById('currentTeacherId').value;
             const finalAvg = document.getElementById('finalScoreDisplay').innerText;
-
             saveRatingData(teacherId, finalAvg);
-
             alert("Review Submitted Successfully!");
             closeModal();
             searchTeacher();
@@ -616,4 +510,3 @@
     </script>
 </body>
 </html>
-
