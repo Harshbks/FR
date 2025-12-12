@@ -9,63 +9,43 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* --- DEFAULT THEME: DAY / LIGHT --- */
-            /* Crisp White, Silver, and Soft Blue Gradients */
-            --bg-gradient-1: #fdfbfb;
-            --bg-gradient-2: #ebedee;
-            --bg-gradient-3: #dfe9f3; 
-            --bg-gradient-4: #ffffff; 
-            
-            /* High opacity glass for better readability against white */
-            --glass-bg: rgba(255, 255, 255, 0.85);
-            --glass-border: rgba(200, 200, 200, 0.6);
-            
-            /* Dark Text for contrast */
-            --text-primary: #1a202c; /* Very Dark Blue/Gray */
-            --text-secondary: #4a5568; /* Medium Gray */
-            
-            --input-bg: rgba(255, 255, 255, 1);
-            --input-border: #cbd5e0;
-            
-            --shadow-color: rgba(0, 0, 0, 0.08);
-            --accent-glow: rgba(66, 153, 225, 0.6);
-            --tag-bg: rgba(0, 0, 0, 0.05);
-            
-            --star-inactive: #cbd5e0;
-            --star-active: #f6ad55; /* Orange/Gold for stars in light mode */
-            
-            /* Darker overlay for banner to make white avatar pop */
-            --card-banner-overlay: linear-gradient(180deg, rgba(0,0,0,0.1), rgba(0,0,0,0.05));
-        }
-
-        /* --- DARK THEME (Activated via Toggle) --- */
-        [data-theme="dark"] {
+            /* DEFAULT (Fallback/Dark Theme definitions) */
             --bg-gradient-1: #89f7fe;
             --bg-gradient-2: #66a6ff;
             --bg-gradient-3: #fbc2eb;
             --bg-gradient-4: #a6c1ee;
-            
             --glass-bg: rgba(255, 255, 255, 0.15);
             --glass-border: rgba(255, 255, 255, 0.2);
-            
             --text-primary: #ffffff;
             --text-secondary: rgba(255, 255, 255, 0.85);
-            
             --input-bg: rgba(255, 255, 255, 0.1);
             --input-border: rgba(255, 255, 255, 0.25);
-            
             --shadow-color: rgba(0, 0, 0, 0.1);
             --accent-glow: rgba(102, 166, 255, 0.5);
             --tag-bg: rgba(255, 255, 255, 0.2);
-            
             --warning-color: #fbbf24;
             --error-color: #f87171;
             --success-color: #34d399; 
-            
             --star-active: #FFD700;
             --star-inactive: rgba(255,255,255,0.3);
-            
-            --card-banner-overlay: linear-gradient(180deg, rgba(255,255,255,0.2), rgba(255,255,255,0.05));
+        }
+
+        /* LIGHT THEME OVERRIDES */
+        [data-theme="light"] {
+            --bg-gradient-1: #e0c3fc;
+            --bg-gradient-2: #8ec5fc;
+            --bg-gradient-3: #e2ebf0;
+            --bg-gradient-4: #cfd9df;
+            --glass-bg: rgba(255, 255, 255, 0.65);
+            --glass-border: rgba(255, 255, 255, 0.9);
+            --text-primary: #2d3748;
+            --text-secondary: rgba(45, 55, 72, 0.7);
+            --input-bg: rgba(255, 255, 255, 0.7);
+            --input-border: rgba(255, 255, 255, 1);
+            --shadow-color: rgba(0, 0, 0, 0.05);
+            --accent-glow: rgba(142, 197, 252, 0.6);
+            --tag-bg: rgba(0, 0, 0, 0.05);
+            --star-inactive: #cbd5e0;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -131,7 +111,6 @@
             font-size: 1.2rem;
             background: var(--glass-bg);
             border: 1px solid var(--glass-border);
-            color: var(--text-primary);
         }
 
         /* --- Search Specific Styles --- */
@@ -157,7 +136,6 @@
             opacity: 0.7;
             pointer-events: none;
             z-index: 1;
-            color: var(--text-primary);
         }
 
         .search-input {
@@ -172,8 +150,6 @@
             backdrop-filter: blur(10px);
             transition: all 0.3s;
         }
-        
-        .search-input::placeholder { color: var(--text-secondary); }
 
         .search-input:focus {
             outline: none;
@@ -198,7 +174,7 @@
 
         .card-banner {
             height: 110px;
-            background: var(--card-banner-overlay);
+            background: linear-gradient(180deg, rgba(255,255,255,0.2), rgba(255,255,255,0.05));
             position: relative;
         }
 
@@ -215,14 +191,18 @@
             border-radius: 50%;
             background: #ffffff;
             border: 4px solid rgba(255,255,255,0.3);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
             overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        .t-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .t-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
 
         .t-content {
             padding: 4rem 1.5rem 1.5rem 1.5rem;
@@ -245,7 +225,7 @@
             border: 1px solid var(--glass-border);
         }
 
-        /* Saved Rating Display */
+        /* Saved Rating Display (Small stars under name) */
         .card-rating-display {
             display: flex;
             align-items: center;
@@ -283,17 +263,16 @@
             background: rgba(255,255,255,0.15);
             border-color: var(--glass-border);
         }
-        
-        /* Light mode hover adjustment */
-        :root:not([data-theme="dark"]) .t-row:hover {
-             background: rgba(0,0,0,0.02);
-             border-color: #cbd5e0;
-        }
 
         .t-label { color: var(--text-secondary); font-weight: 500; display: flex; align-items: center; gap: 0.6rem; }
         .t-val { font-weight: 600; text-align: right; word-break: break-word; max-width: 60%; }
         
-        /* Social Link Styling */
+        .email-link { 
+            color: inherit; 
+            text-decoration: none;
+            border-bottom: 1px dotted currentColor;
+        }
+
         .social-link { 
             background: linear-gradient(45deg, #0077b5 0%, #0e76a8 100%);
             -webkit-background-clip: text;
@@ -301,24 +280,16 @@
             text-decoration: none; 
             font-weight: 800; 
         }
-        
-        /* Email Link Styling */
-        .gmail-link {
-            color: #d93025; /* Default Red for Light Mode */
-            text-decoration: none;
-            font-weight: 800;
-        }
-        [data-theme="dark"] .gmail-link { color: #ff6b6b; }
 
-        /* --- RATE BUTTON --- */
+        /* --- RATE BUTTON (Order #5) --- */
         .btn-rate {
             width: 100%;
-            padding: 1rem;
+            padding: 1rem; /* Slightly larger since it's at bottom */
             margin-top: 0.5rem;
             border: none;
-            border-radius: 14px;
+            border-radius: 14px; /* Matches row radius */
             background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
-            color: #2d3748; /* Default Dark text for Light Mode */
+            color: #fff;
             font-weight: 800;
             font-size: 1rem;
             cursor: pointer;
@@ -328,11 +299,9 @@
             align-items: center;
             justify-content: center;
             gap: 0.5rem;
-        }
-        [data-theme="dark"] .btn-rate { 
-            color: #fff; 
             text-shadow: 0 1px 2px rgba(0,0,0,0.1);
         }
+        [data-theme="light"] .btn-rate { color: #444; }
 
         .btn-rate:hover {
             transform: translateY(-2px);
@@ -341,33 +310,41 @@
 
         /* --- MODAL STYLES --- */
         .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.7); backdrop-filter: blur(8px);
-            z-index: 1000; display: none; align-items: center; justify-content: center;
-            opacity: 0; transition: opacity 0.3s;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s;
         }
         .modal-overlay.active { display: flex; opacity: 1; }
 
         .review-modal {
             width: 90%; max-width: 500px; max-height: 90vh; overflow-y: auto;
-            background: var(--glass-bg); 
-            background-color: #ffffff; /* Default Light BG */
+            background: var(--glass-bg); background-color: #2d3748; 
             border: 1px solid var(--glass-border); border-radius: 24px;
             padding: 2rem; position: relative; transform: scale(0.9);
             transition: transform 0.3s; color: var(--text-primary);
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
         }
-        [data-theme="dark"] .review-modal { background-color: #2d3748; box-shadow: none; }
+        [data-theme="light"] .review-modal { background-color: #fff; }
+
         .modal-overlay.active .review-modal { transform: scale(1); }
 
         .close-btn {
-            position: absolute; top: 1rem; right: 1.5rem; font-size: 2rem;
-            background: none; border: none; color: var(--text-secondary); cursor: pointer;
+            position: absolute; top: 1rem; right: 1.5rem;
+            font-size: 2rem; background: none; border: none;
+            color: var(--text-secondary); cursor: pointer;
         }
 
         .rating-group { margin-bottom: 1.5rem; }
         .rating-label { display: block; margin-bottom: 0.5rem; font-weight: 600; font-size: 0.95rem; }
         .stars-container { display: flex; gap: 5px; }
+        
         .star-btn {
             background: none; border: none; font-size: 1.8rem; color: var(--star-inactive);
             cursor: pointer; transition: transform 0.2s;
@@ -379,19 +356,14 @@
             text-align: center; padding: 1rem; background: var(--input-bg);
             border-radius: 16px; margin-top: 1rem; border: 1px solid var(--glass-border);
         }
-        
         .blink-score {
-            font-size: 3rem; font-weight: 800; color: #e08e00; /* Dark Gold for Light Mode */
+            font-size: 3rem; font-weight: 800; color: var(--warning-color);
             animation: blinker 1.5s linear infinite;
         }
-        [data-theme="dark"] .blink-score { color: var(--warning-color); } /* Bright Gold for Dark Mode */
-        
         @keyframes blinker { 50% { opacity: 0.3; } }
 
         .submit-btn {
-            width: 100%; padding: 1rem; 
-            background: #34d399; /* Green */
-            color: white;
+            width: 100%; padding: 1rem; background: var(--success-color); color: white;
             border: none; border-radius: 12px; font-size: 1.1rem; font-weight: 700;
             margin-top: 1.5rem; cursor: pointer; box-shadow: 0 4px 15px rgba(52, 211, 153, 0.4);
         }
@@ -402,10 +374,12 @@
         }
     </style>
 </head>
-<body data-theme="light"> <div class="container">
+<body data-theme="light">
+
+    <div class="container">
         <div class="navbar">
             <div class="theme-toggle" onclick="toggleTheme()" title="Toggle Theme">
-                <span id="themeIcon">🌙</span>
+                <span id="themeIcon">☀️</span>
             </div>
         </div>
 
@@ -437,7 +411,8 @@
             
             <input type="hidden" id="currentTeacherId">
 
-            <div id="ratingForm"></div>
+            <div id="ratingForm">
+                </div>
 
             <div class="live-score-box">
                 <div style="font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px;">Overall Rating</div>
@@ -450,12 +425,21 @@
 
     <script>
         /* --- Theme Logic --- */
-        let currentTheme = 'light'; // DEFAULT IS LIGHT
+        // Set default to 'light' to match the body attribute
+        let currentTheme = 'light';
         
         function toggleTheme() {
-            currentTheme = currentTheme === 'light' ? 'dark' : 'light';
-            document.body.setAttribute('data-theme', currentTheme);
-            document.getElementById('themeIcon').textContent = currentTheme === 'light' ? '🌙' : '☀️';
+            currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            // If theme is dark, remove attribute (uses :root defaults). 
+            // If theme is light, set attribute (uses [data-theme="light"]).
+            if (currentTheme === 'dark') {
+                document.body.removeAttribute('data-theme');
+            } else {
+                document.body.setAttribute('data-theme', 'light');
+            }
+            
+            document.getElementById('themeIcon').textContent = currentTheme === 'dark' ? '🌙' : '☀️';
         }
 
         /* --- Teacher Data --- */
@@ -531,17 +515,15 @@
                                 <span class="t-label">🏫 Dept</span>
                                 <span class="t-val">${t.department}</span>
                             </div>
+                            
+                            <div class="t-row">
+                                <span class="t-label">📧 Email</span>
+                                <span class="t-val" style="font-size: 0.85rem;"><a href="mailto:${t.email}" class="email-link">${t.email}</a></span>
+                            </div>
 
                             <div class="t-row">
                                 <span class="t-label">📞 Phone</span>
                                 <span class="t-val">${t.phone}</span>
-                            </div>
-                            
-                            <div class="t-row">
-                                <span class="t-label">📧 Email</span>
-                                <span class="t-val">
-                                    <a href="https://mail.google.com/mail/?view=cm&fs=1&to=${t.email}" target="_blank" class="gmail-link">Connect</a>
-                                </span>
                             </div>
 
                             <div class="t-row">
