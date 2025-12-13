@@ -175,7 +175,7 @@
     </div>
 
     <div class="footer-credit">
-        Made by Bhai Virendra
+        made by Bhai Virendra
     </div>
 
     <div class="modal-overlay" id="profileModal">
@@ -207,7 +207,7 @@
                 <div style="font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px;">Overall Rating</div>
                 <div id="finalScoreDisplay" class="blink-score">0.0</div>
             </div>
-            <button class="submit-btn" onclick="submitReview()">Submit Rating</button>
+            <button class="submit-btn" onclick="submitUserReview()">Submit Rating</button>
         </div>
     </div>
 
@@ -284,75 +284,167 @@
             { id: 25, name: "Paromita Chakraborty", subject: "STW", email: "paromita.chakrabortyfce@kiit.ac.in", phone: "0000000000", department: "CIVIL", seed: "paromita", social: "https://www.facebook.com/paromita.chakrabortyfce" }
         ];
 
-        function getRatingData(id) { const data = localStorage.getItem(`rating_data_${id}`); return data ? JSON.parse(data) : { totalSum: 0, count: 0 }; }
-        function saveRatingData(id, avgScore) { const current = getRatingData(id); current.totalSum += parseFloat(avgScore); current.count += 1; localStorage.setItem(`rating_data_${id}`, JSON.stringify(current)); }
+        /* =========================================
+           3. SMART DATA HANDLING (One Review Per User)
+           ========================================= */
+        // Get all reviews for a specific teacher
+        function getTeacherReviews(teacherId) {
+            const data = localStorage.getItem(`reviews_${teacherId}`);
+            return data ? JSON.parse(data) : [];
+        }
 
+        // Get aggregate stats for the card display (Global Average)
+        function getTeacherStats(teacherId) {
+            const reviews = getTeacherReviews(teacherId);
+            if (reviews.length === 0) return { totalSum: 0, count: 0 };
+            
+            let sum = 0;
+            reviews.forEach(r => sum += parseFloat(r.avgScore));
+            return { totalSum: sum, count: reviews.length };
+        }
+
+        // Search logic
         function searchTeacher() {
             const query = document.getElementById('teacherSearchInput').value.toLowerCase().trim();
             const container = document.getElementById('searchResults');
+            
             if (query.length === 0) { container.innerHTML = `<div class="glass" style="padding: 3rem; grid-column: 1/-1; text-align: center; color: var(--text-secondary); display: flex; flex-direction: column; align-items: center; gap: 1rem;"><div style="font-size: 3rem;">🎓</div><p>Start typing a Name to find faculty members.</p></div>`; return; }
             if (query.length < 3) { container.innerHTML = `<div class="glass" style="padding: 3rem; grid-column: 1/-1; text-align: center; color: var(--warning-color); display: flex; flex-direction: column; align-items: center; gap: 1rem;"><div style="font-size: 3rem;">⌨️</div><p>Please enter at least 3 characters...</p></div>`; return; }
+            
             const results = teacherDatabase.filter(t => t.name.toLowerCase().includes(query));
+            
             if (results.length === 0) { container.innerHTML = `<div class="glass" style="padding: 3rem; grid-column: 1/-1; text-align: center; color: var(--error-color); display: flex; flex-direction: column; align-items: center; gap: 1rem;"><div style="font-size: 3rem;">🤷‍♂️</div><p>No faculty found matching "${query}"</p></div>`; return; }
+            
             container.innerHTML = results.map(t => {
-                const savedData = getRatingData(t.id);
-                const displayAvg = savedData.count > 0 ? (savedData.totalSum / savedData.count).toFixed(1) : "N/A";
-                const starDisplay = savedData.count > 0 ? "★" : "☆";
+                const stats = getTeacherStats(t.id);
+                const displayAvg = stats.count > 0 ? (stats.totalSum / stats.count).toFixed(1) : "N/A";
+                const starDisplay = stats.count > 0 ? "★" : "☆";
                 const imageSrc = t.image ? t.image : `https://api.dicebear.com/9.x/avataaars/svg?seed=${t.seed || t.id}`;
+                
                 return `
                 <div class="teacher-card glass fade-in">
                     <div class="card-banner"></div>
                     <div class="t-avatar-wrapper"><div class="t-avatar"><img src="${imageSrc}" alt="${t.name}" loading="lazy"></div></div>
                     <div class="t-content">
                         <h3 class="t-name">${t.name}</h3><div class="t-badge"><span>📚</span> ${t.subject}</div>
-                        <div class="card-rating-display"><span style="font-size: 1.2rem;">${starDisplay}</span><span class="score">${displayAvg}</span><span style="font-size: 0.8rem; opacity: 0.7; font-weight: 400; margin-left:5px;">(${savedData.count} reviews)</span></div>
+                        <div class="card-rating-display"><span style="font-size: 1.2rem;">${starDisplay}</span><span class="score">${displayAvg}</span><span style="font-size: 0.8rem; font-weight: 600; margin-left:5px; color: black;">(${stats.count} reviews)</span></div>
                         <div class="t-details-list">
                             <div class="t-row"><span class="t-label">🏫 Dept</span><span class="t-val">${t.department}</span></div>
                             <div class="t-row"><span class="t-label">📧 Email</span><span class="t-val" style="font-size: 0.85rem;"><a href="mailto:${t.email}" class="email-link">${t.email}</a></span></div>
                             <div class="t-row"><span class="t-label">📞 Phone</span><span class="t-val">${t.phone}</span></div>
                             <div class="t-row"><span class="t-label">🔗 Social</span><span class="t-val"><a href="${t.social}" target="_blank" rel="noopener noreferrer" class="social-link">Connect</a></span></div>
-                            <button class="btn-rate" onclick="openReviewModal(${t.id}, '${t.name}')"><span>⭐</span> Rate Faculty</button>
+                            <button class="btn-rate" onclick="openReviewModal(${t.id}, '${t.name}')"><span>⭐</span> Rate / Edit</button>
                         </div>
                     </div>
                 </div>`}).join('');
         }
 
-        let currentRatings = { c1:0, c2:0, c3:0, c4:0, c5:0 };
-        const criteriaNames = [{id: 'c1', label: '1. Behaviour'}, {id: 'c2', label: '2. Teaching Style'}, {id: 'c3', label: '3. Marks Giving in Exam'}, {id: 'c4', label: '4. Attendance'}, {id: 'c5', label: '5. Internal Marks'}];
+        /* --- RATING LOGIC --- */
+        let currentRatings = { c1:0, c2:0, c3:0, c4:0, c5:0, c6:0 };
+        const criteriaNames = [
+            {id: 'c1', label: '1. Behaviour'},
+            {id: 'c2', label: '2. Teaching Style'},
+            {id: 'c3', label: '3. Marks in Exam'},
+            {id: 'c4', label: '4. Marks in Internal'},
+            {id: 'c5', label: '5. Attendance(Chill)'},
+            {id: 'c6', label: '6. Notes + Assignment'}
+        ];
 
         function openReviewModal(id, name) {
             document.getElementById('modalTeacherName').innerText = name;
             document.getElementById('currentTeacherId').value = id;
+            
+            // 1. Check if user already reviewed this teacher
+            const reviews = getTeacherReviews(id);
+            const userReview = reviews.find(r => r.user === loggedInUser);
+            
+            // 2. Set ratings based on history or reset
+            if (userReview) {
+                currentRatings = { ...userReview.ratings }; // Load old ratings
+                document.getElementById('finalScoreDisplay').innerText = userReview.avgScore;
+            } else {
+                currentRatings = { c1:0, c2:0, c3:0, c4:0, c5:0, c6:0 }; // Reset
+                document.getElementById('finalScoreDisplay').innerText = "0.0";
+            }
+
+            // 3. Render Stars
             const formContainer = document.getElementById('ratingForm');
             formContainer.innerHTML = '';
             criteriaNames.forEach(c => {
                 let starsHtml = '';
-                for(let i=1; i<=5; i++) { starsHtml += `<button class="star-btn" onclick="setStar('${c.id}', ${i}, this)">★</button>`; }
+                for(let i=1; i<=5; i++) { 
+                    // Check if this star should be active based on currentRatings
+                    const activeClass = i <= currentRatings[c.id] ? 'active' : '';
+                    starsHtml += `<button class="star-btn ${activeClass}" onclick="setStar('${c.id}', ${i}, this)">★</button>`; 
+                }
                 const group = document.createElement('div');
                 group.className = 'rating-group';
                 group.innerHTML = `<label class="rating-label">${c.label}</label><div class="stars-container" id="stars-${c.id}">${starsHtml}</div>`;
                 formContainer.appendChild(group);
             });
-            currentRatings = { c1:0, c2:0, c3:0, c4:0, c5:0 };
-            document.getElementById('finalScoreDisplay').innerText = "0.0";
+
             document.getElementById('reviewModal').classList.add('active');
         }
 
         function closeModal() { document.getElementById('reviewModal').classList.remove('active'); }
+        
         function setStar(criteriaId, value, btnElement) {
             currentRatings[criteriaId] = value;
             const container = document.getElementById(`stars-${criteriaId}`);
             const buttons = container.getElementsByTagName('button');
-            for(let i=0; i<buttons.length; i++) { if(i < value) buttons[i].classList.add('active'); else buttons[i].classList.remove('active'); }
-            let sum = 0; Object.values(currentRatings).forEach(v => sum += v);
+            for(let i=0; i<buttons.length; i++) { 
+                if(i < value) buttons[i].classList.add('active'); 
+                else buttons[i].classList.remove('active'); 
+            }
+            
+            let sum = 0; 
+            Object.values(currentRatings).forEach(v => sum += v);
             const display = document.getElementById('finalScoreDisplay');
-            display.innerText = (sum / 5).toFixed(1);
-            display.classList.remove('blink-score'); void display.offsetWidth; display.classList.add('blink-score');
+            display.innerText = (sum / 6).toFixed(1);
+            
+            // Animation reset
+            display.classList.remove('blink-score'); 
+            void display.offsetWidth; 
+            display.classList.add('blink-score');
         }
-        function submitReview() {
-            if(Object.values(currentRatings).includes(0)) { alert("Please rate all 5 criteria!"); return; }
-            saveRatingData(document.getElementById('currentTeacherId').value, document.getElementById('finalScoreDisplay').innerText);
-            alert("Review Submitted Successfully!"); closeModal(); searchTeacher();
+
+        function submitUserReview() {
+            if(Object.values(currentRatings).includes(0)) { 
+                alert("Please rate all 6 criteria!"); 
+                return; 
+            }
+
+            const teacherId = document.getElementById('currentTeacherId').value;
+            const avgScore = document.getElementById('finalScoreDisplay').innerText;
+            
+            // Get existing reviews array
+            let reviews = getTeacherReviews(teacherId);
+            
+            // Check if user exists
+            const existingIndex = reviews.findIndex(r => r.user === loggedInUser);
+            
+            const newReviewObj = {
+                user: loggedInUser,
+                ratings: currentRatings,
+                avgScore: avgScore,
+                timestamp: new Date().toISOString()
+            };
+
+            if (existingIndex > -1) {
+                // UPDATE existing review
+                reviews[existingIndex] = newReviewObj;
+                alert("Review Updated Successfully!");
+            } else {
+                // ADD new review
+                reviews.push(newReviewObj);
+                alert("Review Submitted Successfully!");
+            }
+
+            // Save back to LocalStorage
+            localStorage.setItem(`reviews_${teacherId}`, JSON.stringify(reviews));
+            
+            closeModal();
+            searchTeacher(); // Refresh UI to show new average
         }
     </script>
 
