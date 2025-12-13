@@ -107,9 +107,7 @@
         .star-btn { background: none; border: none; font-size: 1.8rem; color: var(--star-inactive); cursor: pointer; transition: transform 0.2s; }
         .star-btn:hover { transform: scale(1.2); }
         .star-btn.active { color: var(--star-active); }
-        .live-score-box { text-align: center; padding: 1rem; background: var(--input-bg); border-radius: 16px; margin-top: 1rem; border: 1px solid var(--glass-border); }
-        .blink-score { font-size: 3rem; font-weight: 800; color: var(--warning-color); animation: blinker 1.5s linear infinite; }
-        @keyframes blinker { 50% { opacity: 0.3; } }
+        /* Removed Live Score Box Styling */
         .submit-btn { width: 100%; padding: 1rem; background: var(--success-color); color: white; border: none; border-radius: 12px; font-size: 1.1rem; font-weight: 700; margin-top: 1.5rem; cursor: pointer; box-shadow: 0 4px 15px rgba(52, 211, 153, 0.4); }
         @media (max-width: 768px) { .results-grid { grid-template-columns: 1fr; } .search-header h1 { font-size: 2rem; } }
 
@@ -203,10 +201,6 @@
             <p id="modalTeacherName" style="color: var(--accent-glow); margin-bottom: 2rem; font-weight: 600;">Teacher Name</p>
             <input type="hidden" id="currentTeacherId">
             <div id="ratingForm"></div>
-            <div class="live-score-box">
-                <div style="font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px;">Overall Rating</div>
-                <div id="finalScoreDisplay" class="blink-score">0.0</div>
-            </div>
             <button class="submit-btn" onclick="submitUserReview()">Submit Rating</button>
         </div>
     </div>
@@ -287,13 +281,11 @@
         /* =========================================
            3. SMART DATA HANDLING (One Review Per User)
            ========================================= */
-        // Get all reviews for a specific teacher
         function getTeacherReviews(teacherId) {
             const data = localStorage.getItem(`reviews_${teacherId}`);
             return data ? JSON.parse(data) : [];
         }
 
-        // Get aggregate stats for the card display (Global Average)
         function getTeacherStats(teacherId) {
             const reviews = getTeacherReviews(teacherId);
             if (reviews.length === 0) return { totalSum: 0, count: 0 };
@@ -303,7 +295,6 @@
             return { totalSum: sum, count: reviews.length };
         }
 
-        // Search logic
         function searchTeacher() {
             const query = document.getElementById('teacherSearchInput').value.toLowerCase().trim();
             const container = document.getElementById('searchResults');
@@ -346,7 +337,7 @@
             {id: 'c2', label: '2. Teaching Style'},
             {id: 'c3', label: '3. Marks in Exam'},
             {id: 'c4', label: '4. Marks in Internal'},
-            {id: 'c5', label: '5. Attendance(Chill)'},
+            {id: 'c5', label: '5. Attendance'},
             {id: 'c6', label: '6. Notes + Assignment'}
         ];
 
@@ -361,10 +352,8 @@
             // 2. Set ratings based on history or reset
             if (userReview) {
                 currentRatings = { ...userReview.ratings }; // Load old ratings
-                document.getElementById('finalScoreDisplay').innerText = userReview.avgScore;
             } else {
                 currentRatings = { c1:0, c2:0, c3:0, c4:0, c5:0, c6:0 }; // Reset
-                document.getElementById('finalScoreDisplay').innerText = "0.0";
             }
 
             // 3. Render Stars
@@ -396,16 +385,6 @@
                 if(i < value) buttons[i].classList.add('active'); 
                 else buttons[i].classList.remove('active'); 
             }
-            
-            let sum = 0; 
-            Object.values(currentRatings).forEach(v => sum += v);
-            const display = document.getElementById('finalScoreDisplay');
-            display.innerText = (sum / 6).toFixed(1);
-            
-            // Animation reset
-            display.classList.remove('blink-score'); 
-            void display.offsetWidth; 
-            display.classList.add('blink-score');
         }
 
         function submitUserReview() {
@@ -415,7 +394,11 @@
             }
 
             const teacherId = document.getElementById('currentTeacherId').value;
-            const avgScore = document.getElementById('finalScoreDisplay').innerText;
+            
+            // Calculate Average internally
+            let sum = 0;
+            Object.values(currentRatings).forEach(v => sum += v);
+            const avgScore = (sum / 6).toFixed(1);
             
             // Get existing reviews array
             let reviews = getTeacherReviews(teacherId);
