@@ -3,383 +3,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teacher Directory & Ratings</title>
+    <title>Faculty Review Portal</title>
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
         :root {
-            /* DEFAULT (Fallback/Dark Theme definitions) */
-            --bg-gradient-1: #89f7fe;
-            --bg-gradient-2: #66a6ff;
-            --bg-gradient-3: #fbc2eb;
-            --bg-gradient-4: #a6c1ee;
-            --glass-bg: rgba(255, 255, 255, 0.15);
-            --glass-border: rgba(255, 255, 255, 0.2);
-            --text-primary: #ffffff;
-            --text-secondary: rgba(255, 255, 255, 0.85);
-            --input-bg: rgba(255, 255, 255, 0.1);
-            --input-border: rgba(255, 255, 255, 0.25);
-            --shadow-color: rgba(0, 0, 0, 0.1);
-            --accent-glow: rgba(102, 166, 255, 0.5);
-            --tag-bg: rgba(255, 255, 255, 0.2);
-            --warning-color: #fbbf24;
-            --error-color: #f87171;
-            --success-color: #34d399; 
-            --star-active: #FFD700;
-            --star-inactive: rgba(255,255,255,0.3);
+            --bg-gradient-1: #89f7fe; --bg-gradient-2: #66a6ff; --bg-gradient-3: #fbc2eb; --bg-gradient-4: #a6c1ee;
+            --glass-bg: rgba(255, 255, 255, 0.15); --glass-border: rgba(255, 255, 255, 0.2);
+            --text-primary: #ffffff; --text-secondary: rgba(255, 255, 255, 0.85);
+            --input-bg: rgba(255, 255, 255, 0.1); --input-border: rgba(255, 255, 255, 0.25);
+            --shadow-color: rgba(0, 0, 0, 0.1); --accent-glow: rgba(102, 166, 255, 0.5);
+            --tag-bg: rgba(255, 255, 255, 0.2); --warning-color: #fbbf24; --error-color: #f87171;
+            --success-color: #34d399; --star-active: #FFD700; --star-inactive: rgba(255,255,255,0.3);
         }
-
-        /* LIGHT THEME OVERRIDES */
         [data-theme="light"] {
-            --bg-gradient-1: #e0c3fc;
-            --bg-gradient-2: #8ec5fc;
-            --bg-gradient-3: #e2ebf0;
-            --bg-gradient-4: #cfd9df;
-            --glass-bg: rgba(255, 255, 255, 0.65);
-            --glass-border: rgba(255, 255, 255, 0.9);
-            --text-primary: #2d3748;
-            --text-secondary: rgba(45, 55, 72, 0.7);
-            --input-bg: rgba(255, 255, 255, 0.7);
-            --input-border: rgba(255, 255, 255, 1);
-            --shadow-color: rgba(0, 0, 0, 0.05);
-            --accent-glow: rgba(142, 197, 252, 0.6);
-            --tag-bg: rgba(0, 0, 0, 0.05);
-            --star-inactive: #cbd5e0;
+            --bg-gradient-1: #e0c3fc; --bg-gradient-2: #8ec5fc; --bg-gradient-3: #e2ebf0; --bg-gradient-4: #cfd9df;
+            --glass-bg: rgba(255, 255, 255, 0.65); --glass-border: rgba(255, 255, 255, 0.9);
+            --text-primary: #2d3748; --text-secondary: rgba(45, 55, 72, 0.7);
+            --input-bg: rgba(255, 255, 255, 0.7); --input-border: rgba(255, 255, 255, 1);
+            --shadow-color: rgba(0, 0, 0, 0.05); --accent-glow: rgba(142, 197, 252, 0.6);
+            --tag-bg: rgba(0, 0, 0, 0.05); --star-inactive: #cbd5e0;
         }
-
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
         body {
             font-family: 'Inter', sans-serif;
             background: linear-gradient(-45deg, var(--bg-gradient-1), var(--bg-gradient-2), var(--bg-gradient-3), var(--bg-gradient-4));
-            background-size: 400% 400%;
-            animation: gradientShift 15s ease infinite;
-            color: var(--text-primary);
-            min-height: 100vh;
-            overflow-x: hidden;
-            transition: color 0.3s ease;
+            background-size: 400% 400%; animation: gradientShift 15s ease infinite;
+            color: var(--text-primary); min-height: 100vh; overflow-x: hidden; transition: color 0.3s ease;
         }
-
-        @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        /* --- Utility Classes --- */
-        .glass {
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            box-shadow: 0 8px 32px var(--shadow-color);
-            border-radius: 24px;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem 1rem;
-        }
-
+        @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        .glass { background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--glass-border); box-shadow: 0 8px 32px var(--shadow-color); border-radius: 24px; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .container { max-width: 1200px; margin: 0 auto; padding: 2rem 1rem 4rem 1rem; /* Added padding bottom for footer */ }
+        .hidden { display: none !important; }
         .fade-in { animation: fadeIn 0.5s ease-out; }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* --- Navigation Bar --- */
-        .navbar {
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-            padding: 1rem 0;
-            margin-bottom: 2rem;
-        }
-
-        .theme-toggle {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 1.2rem;
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-        }
-
-        /* --- Search Specific Styles --- */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; margin-bottom: 2rem; }
+        .nav-brand { font-weight: 800; font-size: 1.5rem; text-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .nav-controls { display: flex; gap: 1rem; align-items: center; }
+        .icon-btn { width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.2rem; background: var(--glass-bg); border: 1px solid var(--glass-border); color: var(--text-primary); transition: transform 0.2s, background 0.2s; }
+        .icon-btn:hover { transform: scale(1.1); background: var(--input-bg); }
+        #login-section { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 9999; background: linear-gradient(-45deg, var(--bg-gradient-1), var(--bg-gradient-2)); display: flex; justify-content: center; align-items: center; }
+        .login-box { width: 90%; max-width: 400px; padding: 2.5rem; text-align: center; }
+        .login-input { width: 100%; padding: 1rem; margin: 1rem 0; background: var(--input-bg); border: 1px solid var(--input-border); border-radius: 12px; color: var(--text-primary); font-size: 1rem; outline: none; transition: border 0.3s; }
+        .login-input::placeholder { color: var(--text-secondary); }
+        .login-input:focus { border-color: var(--accent-glow); background: rgba(255,255,255,0.2); }
+        .btn-primary { width: 100%; padding: 1rem; background: var(--success-color); color: white; border: none; border-radius: 12px; font-size: 1rem; font-weight: 700; cursor: pointer; box-shadow: 0 4px 15px rgba(52, 211, 153, 0.4); margin-top: 0.5rem; transition: transform 0.2s; }
+        .btn-primary:hover { transform: translateY(-2px); }
+        .profile-details { text-align: left; margin-top: 1rem; }
+        .profile-row { padding: 0.8rem; border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; }
         .search-header { text-align: center; margin-bottom: 3rem; }
-
-        .search-container {
-            position: relative;
-            max-width: 600px;
-            margin: 0 auto 3rem auto;
-            display: flex;
-            gap: 1rem;
-            align-items: stretch;
-        }
-
+        .search-container { position: relative; max-width: 600px; margin: 0 auto 3rem auto; display: flex; gap: 1rem; align-items: stretch; }
         .search-input-wrapper { position: relative; flex-grow: 1; }
-
-        .search-icon-input {
-            position: absolute;
-            left: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 1.4rem;
-            opacity: 0.7;
-            pointer-events: none;
-            z-index: 1;
-        }
-
-        .search-input {
-            padding-left: 3.5rem;
-            height: 60px;
-            font-size: 1.2rem;
-            border-radius: 50px;
-            width: 100%;
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            color: var(--text-primary);
-            backdrop-filter: blur(10px);
-            transition: all 0.3s;
-        }
-
-        .search-input:focus {
-            outline: none;
-            box-shadow: 0 0 0 4px var(--accent-glow);
-            background: var(--input-bg);
-        }
-
-        /* --- Results Grid & Card --- */
-        .results-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 2rem;
-        }
-
-        .teacher-card {
-            padding: 0;
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .card-banner {
-            height: 110px;
-            background: linear-gradient(180deg, rgba(255,255,255,0.2), rgba(255,255,255,0.05));
-            position: relative;
-        }
-
-        .t-avatar-wrapper {
-            position: absolute;
-            top: 55px;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-
-        .t-avatar {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            background: #ffffff;
-            border: 4px solid rgba(255,255,255,0.3);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .t-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .t-content {
-            padding: 4rem 1.5rem 1.5rem 1.5rem;
-            text-align: center;
-        }
-
+        .search-icon-input { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); font-size: 1.4rem; opacity: 0.7; pointer-events: none; z-index: 1; }
+        .search-input { padding-left: 3.5rem; height: 60px; font-size: 1.2rem; border-radius: 50px; width: 100%; background: var(--glass-bg); border: 1px solid var(--glass-border); color: var(--text-primary); backdrop-filter: blur(10px); transition: all 0.3s; }
+        .search-input:focus { outline: none; box-shadow: 0 0 0 4px var(--accent-glow); background: var(--input-bg); }
+        .results-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 2rem; }
+        .teacher-card { padding: 0; position: relative; overflow: hidden; display: flex; flex-direction: column; }
+        .card-banner { height: 110px; background: linear-gradient(180deg, rgba(255,255,255,0.2), rgba(255,255,255,0.05)); position: relative; }
+        .t-avatar-wrapper { position: absolute; top: 55px; left: 50%; transform: translateX(-50%); }
+        .t-avatar { width: 100px; height: 100px; border-radius: 50%; background: #ffffff; border: 4px solid rgba(255,255,255,0.3); box-shadow: 0 4px 20px rgba(0,0,0,0.2); overflow: hidden; display: flex; align-items: center; justify-content: center; }
+        .t-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .t-content { padding: 4rem 1.5rem 1.5rem 1.5rem; text-align: center; }
         .t-name { font-size: 1.4rem; font-weight: 700; margin-bottom: 0.2rem; }
-        
-        .t-badge { 
-            color: var(--text-primary); 
-            font-size: 0.9rem; 
-            font-weight: 600;
-            margin-bottom: 0.5rem; 
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4rem;
-            padding: 0.4rem 1rem; 
-            background: var(--tag-bg); 
-            border-radius: 20px; 
-            border: 1px solid var(--glass-border);
-        }
-
-        /* Saved Rating Display (Small stars under name) */
-        .card-rating-display {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            margin-bottom: 1.5rem;
-            color: var(--star-active);
-            font-weight: 700;
-        }
-        .card-rating-display span.score {
-            font-size: 1.1rem;
-            color: var(--text-primary);
-        }
-
-        .t-details-list {
-            display: flex;
-            flex-direction: column;
-            gap: 0.8rem;
-        }
-
-        .t-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem;
-            background: var(--input-bg);
-            border-radius: 14px;
-            font-size: 0.95rem;
-            transition: transform 0.2s;
-            border: 1px solid transparent;
-        }
-
-        .t-row:hover {
-            transform: scale(1.02);
-            background: rgba(255,255,255,0.15);
-            border-color: var(--glass-border);
-        }
-
+        .t-badge { color: var(--text-primary); font-size: 0.9rem; font-weight: 600; margin-bottom: 0.5rem; display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.4rem 1rem; background: var(--tag-bg); border-radius: 20px; border: 1px solid var(--glass-border); }
+        .card-rating-display { display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 1.5rem; color: var(--star-active); font-weight: 700; }
+        .card-rating-display span.score { font-size: 1.1rem; color: var(--text-primary); }
+        .t-details-list { display: flex; flex-direction: column; gap: 0.8rem; }
+        .t-row { display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: var(--input-bg); border-radius: 14px; font-size: 0.95rem; transition: transform 0.2s; border: 1px solid transparent; }
+        .t-row:hover { transform: scale(1.02); background: rgba(255,255,255,0.15); border-color: var(--glass-border); }
         .t-label { color: var(--text-secondary); font-weight: 500; display: flex; align-items: center; gap: 0.6rem; }
         .t-val { font-weight: 600; text-align: right; word-break: break-word; max-width: 60%; }
-        
-        .email-link { 
-            color: inherit; 
-            text-decoration: none;
-            border-bottom: 1px dotted currentColor;
-        }
-
-        .social-link { 
-            background: linear-gradient(45deg, #0077b5 0%, #0e76a8 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-decoration: none; 
-            font-weight: 800; 
-        }
-
-        /* --- RATE BUTTON (Order #5) --- */
-        .btn-rate {
-            width: 100%;
-            padding: 1rem; /* Slightly larger since it's at bottom */
-            margin-top: 0.5rem;
-            border: none;
-            border-radius: 14px; /* Matches row radius */
-            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
-            color: #fff;
-            font-weight: 800;
-            font-size: 1rem;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(255, 154, 158, 0.4);
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
-        }
+        .email-link { color: inherit; text-decoration: none; border-bottom: 1px dotted currentColor; }
+        .social-link { background: linear-gradient(45deg, #0077b5 0%, #0e76a8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-decoration: none; font-weight: 800; }
+        .btn-rate { width: 100%; padding: 1rem; margin-top: 0.5rem; border: none; border-radius: 14px; background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%); color: #fff; font-weight: 800; font-size: 1rem; cursor: pointer; box-shadow: 0 4px 15px rgba(255, 154, 158, 0.4); transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 0.5rem; text-shadow: 0 1px 2px rgba(0,0,0,0.1); }
         [data-theme="light"] .btn-rate { color: #444; }
-
-        .btn-rate:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(255, 154, 158, 0.6);
-        }
-
-        /* --- MODAL STYLES --- */
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(8px);
-            z-index: 1000;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
+        .btn-rate:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255, 154, 158, 0.6); }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); z-index: 1000; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s; }
         .modal-overlay.active { display: flex; opacity: 1; }
-
-        .review-modal {
-            width: 90%; max-width: 500px; max-height: 90vh; overflow-y: auto;
-            background: var(--glass-bg); background-color: #2d3748; 
-            border: 1px solid var(--glass-border); border-radius: 24px;
-            padding: 2rem; position: relative; transform: scale(0.9);
-            transition: transform 0.3s; color: var(--text-primary);
-        }
+        .review-modal { width: 90%; max-width: 500px; max-height: 90vh; overflow-y: auto; background: var(--glass-bg); background-color: #2d3748; border: 1px solid var(--glass-border); border-radius: 24px; padding: 2rem; position: relative; transform: scale(0.9); transition: transform 0.3s; color: var(--text-primary); }
         [data-theme="light"] .review-modal { background-color: #fff; }
-
         .modal-overlay.active .review-modal { transform: scale(1); }
-
-        .close-btn {
-            position: absolute; top: 1rem; right: 1.5rem;
-            font-size: 2rem; background: none; border: none;
-            color: var(--text-secondary); cursor: pointer;
-        }
-
+        .close-btn { position: absolute; top: 1rem; right: 1.5rem; font-size: 2rem; background: none; border: none; color: var(--text-secondary); cursor: pointer; }
         .rating-group { margin-bottom: 1.5rem; }
         .rating-label { display: block; margin-bottom: 0.5rem; font-weight: 600; font-size: 0.95rem; }
         .stars-container { display: flex; gap: 5px; }
-        
-        .star-btn {
-            background: none; border: none; font-size: 1.8rem; color: var(--star-inactive);
-            cursor: pointer; transition: transform 0.2s;
-        }
+        .star-btn { background: none; border: none; font-size: 1.8rem; color: var(--star-inactive); cursor: pointer; transition: transform 0.2s; }
         .star-btn:hover { transform: scale(1.2); }
         .star-btn.active { color: var(--star-active); }
-
-        .live-score-box {
-            text-align: center; padding: 1rem; background: var(--input-bg);
-            border-radius: 16px; margin-top: 1rem; border: 1px solid var(--glass-border);
-        }
-        .blink-score {
-            font-size: 3rem; font-weight: 800; color: var(--warning-color);
-            animation: blinker 1.5s linear infinite;
-        }
+        .live-score-box { text-align: center; padding: 1rem; background: var(--input-bg); border-radius: 16px; margin-top: 1rem; border: 1px solid var(--glass-border); }
+        .blink-score { font-size: 3rem; font-weight: 800; color: var(--warning-color); animation: blinker 1.5s linear infinite; }
         @keyframes blinker { 50% { opacity: 0.3; } }
+        .submit-btn { width: 100%; padding: 1rem; background: var(--success-color); color: white; border: none; border-radius: 12px; font-size: 1.1rem; font-weight: 700; margin-top: 1.5rem; cursor: pointer; box-shadow: 0 4px 15px rgba(52, 211, 153, 0.4); }
+        @media (max-width: 768px) { .results-grid { grid-template-columns: 1fr; } .search-header h1 { font-size: 2rem; } }
 
-        .submit-btn {
-            width: 100%; padding: 1rem; background: var(--success-color); color: white;
-            border: none; border-radius: 12px; font-size: 1.1rem; font-weight: 700;
-            margin-top: 1.5rem; cursor: pointer; box-shadow: 0 4px 15px rgba(52, 211, 153, 0.4);
-        }
-
-        @media (max-width: 768px) {
-            .results-grid { grid-template-columns: 1fr; }
-            .search-header h1 { font-size: 2rem; }
+        /* --- FOOTER CREDIT --- */
+        .footer-credit {
+            position: fixed;
+            bottom: 1rem;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 500;
+            z-index: 10001;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+            pointer-events: none;
+            opacity: 0.8;
+            font-family: 'Inter', sans-serif;
+            letter-spacing: 0.5px;
         }
     </style>
 </head>
 <body data-theme="light">
 
-    <div class="container">
+    <div id="login-section">
+        <div class="login-box glass fade-in">
+            <h1 style="font-size: 2rem; margin-bottom: 0.5rem;">Student Login</h1>
+            <p style="color: var(--text-secondary); margin-bottom: 2rem;">Verification Required</p>
+
+            <div id="email-step">
+                <input type="email" id="kiitEmail" class="login-input" placeholder="Enter ID (e.g. 2105123@kiit.ac.in)">
+                <button onclick="loginStudent()" class="btn-primary">Login</button>
+            </div>
+            
+            <p id="loginStatus" style="color: var(--warning-color); margin-top: 1rem; font-size: 0.9rem; min-height: 20px;"></p>
+        </div>
+    </div>
+
+    <div id="dashboard-section" class="container hidden">
         <div class="navbar">
-            <div class="theme-toggle" onclick="toggleTheme()" title="Toggle Theme">
-                <span id="themeIcon">☀️</span>
+            <div class="nav-brand">Faculty Directory</div>
+            <div class="nav-controls">
+                <div class="icon-btn" onclick="toggleProfile()" title="My Profile"><i class="fa-solid fa-user"></i></div>
+                <div class="icon-btn" onclick="toggleTheme()" title="Toggle Theme"><span id="themeIcon">☀️</span></div>
             </div>
         </div>
 
@@ -403,47 +164,92 @@
         </div>
     </div>
 
+    <div class="modal-overlay" id="profileModal">
+        <div class="review-modal">
+            <button class="close-btn" onclick="closeProfile()">×</button>
+            <h2 style="margin-bottom: 1rem;">Student Profile</h2>
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <div style="width: 80px; height: 80px; background: var(--success-color); border-radius: 50%; display:inline-flex; align-items:center; justify-content:center; font-size: 2rem; color: white; box-shadow: 0 4px 20px rgba(52, 211, 153, 0.5);">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+            </div>
+            <div class="profile-details">
+                <div class="profile-row"><span style="opacity:0.7">Email</span><span id="p-email" style="font-weight:600"></span></div>
+                <div class="profile-row"><span style="opacity:0.7">Roll No</span><span id="p-roll" style="font-weight:600"></span></div>
+                <div class="profile-row"><span style="opacity:0.7">Status</span><span style="color: var(--success-color); font-weight:600">Verified ✅</span></div>
+            </div>
+            <button class="submit-btn" style="background: var(--error-color);" onclick="location.reload()">Logout</button>
+        </div>
+    </div>
+
     <div class="modal-overlay" id="reviewModal">
         <div class="review-modal">
             <button class="close-btn" onclick="closeModal()">×</button>
             <h2 style="margin-bottom: 0.2rem;">Rate Faculty</h2>
             <p id="modalTeacherName" style="color: var(--accent-glow); margin-bottom: 2rem; font-weight: 600;">Teacher Name</p>
-            
             <input type="hidden" id="currentTeacherId">
-
-            <div id="ratingForm">
-                </div>
-
+            <div id="ratingForm"></div>
             <div class="live-score-box">
                 <div style="font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px;">Overall Rating</div>
                 <div id="finalScoreDisplay" class="blink-score">0.0</div>
             </div>
-
             <button class="submit-btn" onclick="submitReview()">Submit Rating</button>
         </div>
     </div>
 
+    <div class="footer-credit">Made by Bhai Virendra</div>
+
     <script>
-        /* --- Theme Logic --- */
+        /* =========================================
+           1. AUTHENTICATION (NO OTP, JUST CHECK)
+           ========================================= */
+        let loggedInUser = "";
+
+        function loginStudent() {
+            const emailInput = document.getElementById('kiitEmail');
+            const status = document.getElementById('loginStatus');
+            
+            // 1. Clean the input
+            const email = emailInput.value.trim().toLowerCase();
+
+            // 2. STRICT VALIDATION: Must end with @kiit.ac.in
+            if (!email.endsWith('@kiit.ac.in')) {
+                status.innerHTML = "<i class='fa-solid fa-circle-exclamation'></i> Access Denied: Official @kiit.ac.in mail required.";
+                status.style.color = "var(--error-color)";
+                emailInput.style.border = "1px solid var(--error-color)";
+                return;
+            }
+
+            // 3. SUCCESS - Direct Login
+            loggedInUser = email;
+            
+            // Switch UI
+            document.getElementById('login-section').classList.add('hidden');
+            document.getElementById('dashboard-section').classList.remove('hidden');
+            
+            // Set Profile Data
+            document.getElementById('p-email').innerText = loggedInUser;
+            document.getElementById('p-roll').innerText = loggedInUser.split('@')[0];
+        }
+
+        function toggleProfile() { document.getElementById('profileModal').classList.add('active'); }
+        function closeProfile() { document.getElementById('profileModal').classList.remove('active'); }
+
+        /* =========================================
+           2. APP LOGIC (Data, Ratings, Search)
+           ========================================= */
         let currentTheme = 'light';
-        
         function toggleTheme() {
             currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            if (currentTheme === 'dark') {
-                document.body.removeAttribute('data-theme');
-            } else {
-                document.body.setAttribute('data-theme', 'light');
-            }
+            document.body.setAttribute('data-theme', currentTheme === 'dark' ? '' : 'light');
             document.getElementById('themeIcon').textContent = currentTheme === 'dark' ? '🌙' : '☀️';
         }
 
-        /* --- Teacher Data --- */
         const teacherDatabase = [
             { id: 1,name: "Shubhasri Kundu", image: "https://i.ibb.co/svbpFypW/kundu.jpg", subject: "IND4.O",email: "shubhasri.kundufel@kiit.ac.in", phone: "8280311924",department: "ELECTRONICS",seed: "shubhasri",social: "https://www.facebook.com/angel.su.10048"},
             { id: 2, name: "Rachita Panda",image: "https://i.ibb.co/zTZ6xygP/Screenshot-2025-12-13-005439.png", subject: "STW", email: "rachita.pandafce@kiit.ac.in", phone: "9658978785", department: "CIVIL", seed: "rachita", social: "https://www.facebook.com/rachita.panda.31" },
             { id: 4, name: "Nibedita Das", image:"https://i.ibb.co/ymqJ5CFP/nibedita.jpg",subject: "Chemistry", email: "nibedita.dasfch@kiit.ac.in", phone: "9958311101", department: "CHEMISTRY", seed: "nibedita", social: "https://www.facebook.com/nibedita.das.31" },
             { id: 5, name: "Lipika Dewangan",image:"https://i.ibb.co/bRsLBV82/Lipika-Dewangan.jpg", subject: "AFL", email: "lipika.dewanganfcs@kiit.ac.in", phone: "8328813061", department: "CSE", seed: "lipika", social: "https://www.facebook.com/lipika.dewangan.35" },
-           
             { id: 6, name: "Dr. Anita Nayak", subject: "Maths", email: "anita.nayakfma@kiit.ac.in", phone: "9861402163", department: "MATHEMATICS", social: "https://www.facebook.com/profile.php?id=100031911081563" },
             { id: 7, name: "Dr. Arun Kumar Gupta", subject: "Maths", email: "arun.guptafma@kiit.ac.in", phone: "", department: "MATHEMATICS", social: "https://www.facebook.com/arunkumar.gupta.35325074" },
             { id: 8, name: "Dr. Bapuji Sahoo",image:"https://i.ibb.co/zVVktZkJ/bapujii.jpg", subject: "Maths", email: "bapuji.sahoofma@kiit.ac.in", phone: "9778599785", department: "MATHEMATICS", social: "https://www.facebook.com/bapuji.sahoo.3" },
@@ -466,208 +272,84 @@
             { id: 25, name: "Paromita Chakraborty", subject: "STW", email: "paromita.chakrabortyfce@kiit.ac.in", phone: "0000000000", department: "CIVIL", seed: "paromita", social: "https://www.facebook.com/paromita.chakrabortyfce" }
         ];
 
-        /* --- LocalStorage Helper --- */
-        function getRatingData(id) {
-            const data = localStorage.getItem(`rating_data_${id}`);
-            return data ? JSON.parse(data) : { totalSum: 0, count: 0 };
-        }
+        function getRatingData(id) { const data = localStorage.getItem(`rating_data_${id}`); return data ? JSON.parse(data) : { totalSum: 0, count: 0 }; }
+        function saveRatingData(id, avgScore) { const current = getRatingData(id); current.totalSum += parseFloat(avgScore); current.count += 1; localStorage.setItem(`rating_data_${id}`, JSON.stringify(current)); }
 
-        function saveRatingData(id, avgScore) {
-            const current = getRatingData(id);
-            current.totalSum += parseFloat(avgScore);
-            current.count += 1;
-            localStorage.setItem(`rating_data_${id}`, JSON.stringify(current));
-        }
-
-        /* --- Search Logic --- */
         function searchTeacher() {
             const query = document.getElementById('teacherSearchInput').value.toLowerCase().trim();
             const container = document.getElementById('searchResults');
-            
-            if (query.length === 0) {
-                container.innerHTML = `<div class="glass" style="padding: 3rem; grid-column: 1/-1; text-align: center; color: var(--text-secondary); display: flex; flex-direction: column; align-items: center; gap: 1rem;"><div style="font-size: 3rem;">🎓</div><p>Start typing a Name to find faculty members.</p></div>`;
-                return;
-            }
-
-            if (query.length < 3) {
-                 container.innerHTML = `<div class="glass" style="padding: 3rem; grid-column: 1/-1; text-align: center; color: var(--warning-color); display: flex; flex-direction: column; align-items: center; gap: 1rem;"><div style="font-size: 3rem;">⌨️</div><p>Please enter at least 3 characters...</p></div>`;
-                return;
-            }
-
+            if (query.length === 0) { container.innerHTML = `<div class="glass" style="padding: 3rem; grid-column: 1/-1; text-align: center; color: var(--text-secondary); display: flex; flex-direction: column; align-items: center; gap: 1rem;"><div style="font-size: 3rem;">🎓</div><p>Start typing a Name to find faculty members.</p></div>`; return; }
+            if (query.length < 3) { container.innerHTML = `<div class="glass" style="padding: 3rem; grid-column: 1/-1; text-align: center; color: var(--warning-color); display: flex; flex-direction: column; align-items: center; gap: 1rem;"><div style="font-size: 3rem;">⌨️</div><p>Please enter at least 3 characters...</p></div>`; return; }
             const results = teacherDatabase.filter(t => t.name.toLowerCase().includes(query));
-
-            if (results.length === 0) {
-                container.innerHTML = `<div class="glass" style="padding: 3rem; grid-column: 1/-1; text-align: center; color: var(--error-color); display: flex; flex-direction: column; align-items: center; gap: 1rem;"><div style="font-size: 3rem;">🤷‍♂️</div><p>No faculty found matching "${query}"</p></div>`;
-                return;
-            }
-
+            if (results.length === 0) { container.innerHTML = `<div class="glass" style="padding: 3rem; grid-column: 1/-1; text-align: center; color: var(--error-color); display: flex; flex-direction: column; align-items: center; gap: 1rem;"><div style="font-size: 3rem;">🤷‍♂️</div><p>No faculty found matching "${query}"</p></div>`; return; }
             container.innerHTML = results.map(t => {
                 const savedData = getRatingData(t.id);
                 const displayAvg = savedData.count > 0 ? (savedData.totalSum / savedData.count).toFixed(1) : "N/A";
                 const starDisplay = savedData.count > 0 ? "★" : "☆";
-
-                // --- THIS IS THE FIX ---
-                // We check if t.image exists. If yes, use it. If no, use DiceBear.
                 const imageSrc = t.image ? t.image : `https://api.dicebear.com/9.x/avataaars/svg?seed=${t.seed || t.id}`;
-
                 return `
                 <div class="teacher-card glass fade-in">
                     <div class="card-banner"></div>
-                    <div class="t-avatar-wrapper">
-                        <div class="t-avatar">
-                             <img src="${imageSrc}" alt="${t.name}" loading="lazy">
-                        </div>
-                    </div>
+                    <div class="t-avatar-wrapper"><div class="t-avatar"><img src="${imageSrc}" alt="${t.name}" loading="lazy"></div></div>
                     <div class="t-content">
-                        <h3 class="t-name">${t.name}</h3>
-                        <div class="t-badge"><span>📚</span> ${t.subject}</div>
-
-                        <div class="card-rating-display">
-                            <span style="font-size: 1.2rem;">${starDisplay}</span>
-                            <span class="score">${displayAvg}</span>
-                            <span style="font-size: 0.8rem; opacity: 0.7; font-weight: 400; margin-left:5px;">(${savedData.count} reviews)</span>
-                        </div>
-                        
+                        <h3 class="t-name">${t.name}</h3><div class="t-badge"><span>📚</span> ${t.subject}</div>
+                        <div class="card-rating-display"><span style="font-size: 1.2rem;">${starDisplay}</span><span class="score">${displayAvg}</span><span style="font-size: 0.8rem; opacity: 0.7; font-weight: 400; margin-left:5px;">(${savedData.count} reviews)</span></div>
                         <div class="t-details-list">
-                            <div class="t-row">
-                                <span class="t-label">🏫 Dept</span>
-                                <span class="t-val">${t.department}</span>
-                            </div>
-                            
-                            <div class="t-row">
-                                <span class="t-label">📧 Email</span>
-                                <span class="t-val" style="font-size: 0.85rem;"><a href="mailto:${t.email}" class="email-link">${t.email}</a></span>
-                            </div>
-
-                            <div class="t-row">
-                                <span class="t-label">📞 Phone</span>
-                                <span class="t-val">${t.phone}</span>
-                            </div>
-
-                            <div class="t-row">
-                                <span class="t-label">🔗 Social</span>
-                                <span class="t-val"><a href="${t.social}" target="_blank" rel="noopener noreferrer" class="social-link">Connect</a></span>
-                            </div>
-
-                            <button class="btn-rate" onclick="openReviewModal(${t.id}, '${t.name}')">
-                                <span>⭐</span> Rate Faculty
-                            </button>
+                            <div class="t-row"><span class="t-label">🏫 Dept</span><span class="t-val">${t.department}</span></div>
+                            <div class="t-row"><span class="t-label">📧 Email</span><span class="t-val" style="font-size: 0.85rem;"><a href="mailto:${t.email}" class="email-link">${t.email}</a></span></div>
+                            <div class="t-row"><span class="t-label">📞 Phone</span><span class="t-val">${t.phone}</span></div>
+                            <div class="t-row"><span class="t-label">🔗 Social</span><span class="t-val"><a href="${t.social}" target="_blank" rel="noopener noreferrer" class="social-link">Connect</a></span></div>
+                            <button class="btn-rate" onclick="openReviewModal(${t.id}, '${t.name}')"><span>⭐</span> Rate Faculty</button>
                         </div>
                     </div>
-                </div>
-            `}).join('');
+                </div>`}).join('');
         }
 
-        /* --- RATING LOGIC --- */
         let currentRatings = { c1:0, c2:0, c3:0, c4:0, c5:0 };
-        const criteriaNames = [
-            {id: 'c1', label: '1. Behaviour'},
-            {id: 'c2', label: '2. Teaching Style'},
-            {id: 'c3', label: '3. Marks Giving in Exam'},
-            {id: 'c4', label: '4. Attendance'},
-            {id: 'c5', label: '5. Internal Marks'}
-        ];
+        const criteriaNames = [{id: 'c1', label: '1. Behaviour'}, {id: 'c2', label: '2. Teaching Style'}, {id: 'c3', label: '3. Marks Giving in Exam'}, {id: 'c4', label: '4. Attendance'}, {id: 'c5', label: '5. Internal Marks'}];
 
         function openReviewModal(id, name) {
             document.getElementById('modalTeacherName').innerText = name;
             document.getElementById('currentTeacherId').value = id;
-            
             const formContainer = document.getElementById('ratingForm');
             formContainer.innerHTML = '';
-            
             criteriaNames.forEach(c => {
                 let starsHtml = '';
-                for(let i=1; i<=5; i++) {
-                    starsHtml += `<button class="star-btn" onclick="setStar('${c.id}', ${i}, this)">★</button>`;
-                }
-                
+                for(let i=1; i<=5; i++) { starsHtml += `<button class="star-btn" onclick="setStar('${c.id}', ${i}, this)">★</button>`; }
                 const group = document.createElement('div');
                 group.className = 'rating-group';
-                group.innerHTML = `
-                    <label class="rating-label">${c.label}</label>
-                    <div class="stars-container" id="stars-${c.id}">
-                        ${starsHtml}
-                    </div>
-                `;
+                group.innerHTML = `<label class="rating-label">${c.label}</label><div class="stars-container" id="stars-${c.id}">${starsHtml}</div>`;
                 formContainer.appendChild(group);
             });
-
             currentRatings = { c1:0, c2:0, c3:0, c4:0, c5:0 };
             document.getElementById('finalScoreDisplay').innerText = "0.0";
             document.getElementById('reviewModal').classList.add('active');
         }
 
-        function closeModal() {
-            document.getElementById('reviewModal').classList.remove('active');
-        }
-
+        function closeModal() { document.getElementById('reviewModal').classList.remove('active'); }
         function setStar(criteriaId, value, btnElement) {
             currentRatings[criteriaId] = value;
-            
             const container = document.getElementById(`stars-${criteriaId}`);
             const buttons = container.getElementsByTagName('button');
-            for(let i=0; i<buttons.length; i++) {
-                if(i < value) buttons[i].classList.add('active');
-                else buttons[i].classList.remove('active');
-            }
-
-            calculateLiveAvg();
-        }
-
-        function calculateLiveAvg() {
-            let sum = 0;
-            let keys = Object.keys(currentRatings);
-            keys.forEach(k => sum += currentRatings[k]);
-            
-            let avg = (sum / 5).toFixed(1);
-            
+            for(let i=0; i<buttons.length; i++) { if(i < value) buttons[i].classList.add('active'); else buttons[i].classList.remove('active'); }
+            let sum = 0; Object.values(currentRatings).forEach(v => sum += v);
             const display = document.getElementById('finalScoreDisplay');
-            display.innerText = avg;
-            display.classList.remove('blink-score');
-            void display.offsetWidth;
-            display.classList.add('blink-score');
+            display.innerText = (sum / 5).toFixed(1);
+            display.classList.remove('blink-score'); void display.offsetWidth; display.classList.add('blink-score');
         }
-
         function submitReview() {
-            if(Object.values(currentRatings).includes(0)) {
-                alert("Please rate all 5 criteria!");
-                return;
-            }
-
-            const teacherId = document.getElementById('currentTeacherId').value;
-            const finalAvg = document.getElementById('finalScoreDisplay').innerText;
-
-            saveRatingData(teacherId, finalAvg);
-
-            alert("Review Submitted Successfully!");
-            closeModal();
-            searchTeacher();
+            if(Object.values(currentRatings).includes(0)) { alert("Please rate all 5 criteria!"); return; }
+            saveRatingData(document.getElementById('currentTeacherId').value, document.getElementById('finalScoreDisplay').innerText);
+            alert("Review Submitted Successfully!"); closeModal(); searchTeacher();
         }
     </script>
-<script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-analytics.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
 
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-  const firebaseConfig = {
-    apiKey: "AIzaSyCz4GDP3X6JKN6dH4MeoNJdhe0B3d3UlZI",
-    authDomain: "collegereview-d1c18.firebaseapp.com",
-    databaseURL: "https://collegereview-d1c18-default-rtdb.firebaseio.com",
-    projectId: "collegereview-d1c18",
-    storageBucket: "collegereview-d1c18.firebasestorage.app",
-    messagingSenderId: "1091641534694",
-    appId: "1:1091641534694:web:3cacfd509b550f9a2ef327",
-    measurementId: "G-M2XSHHC4B1"
-  };
-
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-</script>
-    
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+      import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-analytics.js";
+      const firebaseConfig = { apiKey: "AIzaSyCz4GDP3X6JKN6dH4MeoNJdhe0B3d3UlZI", authDomain: "collegereview-d1c18.firebaseapp.com", databaseURL: "https://collegereview-d1c18-default-rtdb.firebaseio.com", projectId: "collegereview-d1c18", storageBucket: "collegereview-d1c18.firebasestorage.app", messagingSenderId: "1091641534694", appId: "1:1091641534694:web:3cacfd509b550f9a2ef327", measurementId: "G-M2XSHHC4B1" };
+      const app = initializeApp(firebaseConfig);
+      const analytics = getAnalytics(app);
+    </script>
 </body>
 </html>
